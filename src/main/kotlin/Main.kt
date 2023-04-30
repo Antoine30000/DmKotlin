@@ -27,13 +27,23 @@ fun firstRound(candidates: List<String>, votes: List<List<String>>): Map<String,
     return results
 }
 
+fun finalists(firstRoundResults: Map<String, Int>): List<String> {
+    return firstRoundResults.entries
+        .sortedByDescending { it.value }
+        .take(2)
+        .map { it.key }
+}
 fun main() {
 
     val file = File("src/votes/300x6.txt")
-    val votes= readVotes(file);
-    val candidate = candidates(votes)
-    print(firstRound(candidate,votes))
-   // println(votes)
+    val votes = readVotes(file)
+    val candidateList = candidates(votes)
+    val firstRoundResults = firstRound(candidateList, votes)
+    val finalCandidates = finalists(firstRoundResults)
+    println("First round results: $firstRoundResults")
+    println("Finalists: $finalCandidates")
+
+}
 
 
 }
