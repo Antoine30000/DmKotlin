@@ -9,13 +9,18 @@ val candidatesList= mutableListOf<List<String>>()
     return candidatesList
 
 }
-
+fun candidates(votes: List<List<String>>): List<String> {
+    val candidates = mutableSetOf<String>()
+    votes.forEach { candidates.addAll(it) }
+    return candidates.sorted()
+}
 
 fun main() {
 
     val file = File("src/votes/300x6.txt")
     val votes= readVotes(file);
-    println(votes)
+    print(candidates(votes))
+   // println(votes)
 
 
 }
