@@ -1,6 +1,6 @@
 import java.io.File
 import kotlin.math.round
-
+import kotlin.math.roundToInt
 
 
 //_________________________________SCRUTIN MAJORITAIRE A DEUX TOURS_________________________________
@@ -120,18 +120,15 @@ fun displayMatrice(pairwiseComparisons: List<List<Int>>) { //Affiche la matrice 
 
 fun sum(pairwiseComparisons1: List<List<Int>>, pairwiseComparisons2: List<List<Int>>): List<List<Int>> { //Retourne la matrice somme
     val sum = mutableListOf<List<Int>>()
-    pairwiseComparisons1.forEachIndexed { index, row ->
+    pairwiseComparisons1.forEachIndexed { rowIndex, row ->
         val sumRow = mutableListOf<Int>()
-        row.forEachIndexed { index, value ->
-            sumRow.add(value + pairwiseComparisons2[index][index])
+        row.forEachIndexed { colIndex, value ->
+            sumRow.add(value + pairwiseComparisons2[rowIndex][colIndex])
         }
         sum.add(sumRow)
     }
     return sum
 }
-
-
-
 //_________________________________END_________________________________
 
 fun main() {
@@ -162,8 +159,7 @@ fun main() {
 
 
     val sumResult = sum(pairwiseComparisonsResult, pairwiseComparisonsResult2) //Retourne la matrice somme (EXERCICE 8)
-    println(displayMatrice(sumResult))
+    println("Resultat matrice: ${displayMatrice(pairwiseComparisonsResult2)}")
+
 
 }
-
-
