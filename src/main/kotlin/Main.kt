@@ -137,26 +137,29 @@ fun main() {
 
     val file = File("src/votes/sample.txt")
     val votes = readVotes(file) //Retourne la liste de liste de candidats avec la fonction readVotes (EXERCICE 1)
+    //println(votes)
 
     val candidates_sort = candidates(votes) //Retourne la liste de candidats par l'ordre alphabétique (EXERCICE 2)
-
+    //println(candidates_sort)
 
     val firstRoundResults = firstRound(candidates_sort, votes) //Retourne le nombre de votes par candidat (EXERCICE 3)
+    //println(firstRoundResults)
 
     val finalCandidates = finalists(firstRoundResults) //Retourne les deux candidats finalistes (EXERCICE 4)
+    //println(finalCandidates)
 
     val secondRoundResults = secondRound(votes, finalCandidates) //Retourne le résultat du second tour (EXERCICE 5)
-
+    //println(secondRoundResults)
 
     displayresults(firstRoundResults, secondRoundResults) //Affiche les résultats (EXERCICE 6)
 
     //_________________________________METHODE DE CONDORCET_________________________________
 
     val pairwiseComparisonsResult = pairwiseComparisons(candidates_sort, votes[0]) //Retourne la matrice 1(EXERCICE 7)
-
+    //println("Resultat matrice 1: ${displayMatrice(pairwiseComparisonsResult)}")
 
     val pairwiseComparisonsResult2 = pairwiseComparisons(candidates_sort, votes[1]) //Retourne la matrice 2(EXERCICE 7)
-
+    //println("Resultat matrice 2: ${displayMatrice(pairwiseComparisonsResult2)}")
 
     val sumResult = sum(pairwiseComparisonsResult, pairwiseComparisonsResult2) //Retourne la matrice somme (EXERCICE 8)
     println("Resultat matrice: ${displayMatrice(pairwiseComparisonsResult2)}")
