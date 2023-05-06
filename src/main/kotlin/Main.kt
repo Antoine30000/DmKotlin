@@ -1,7 +1,10 @@
 import java.io.File
 import kotlin.math.round
 
-fun readVotes (file:File):  List<List<String>> {
+
+
+//_________________________________SCRUTIN MAJORITAIRE A DEUX TOURS_________________________________
+fun readVotes (file:File):  List<List<String>> { //Retourne la liste de liste de candidats
     val candidatesList= mutableListOf<List<String>>()
         file.forEachLine {line->
             if (line.isNotBlank()) {
@@ -12,13 +15,13 @@ fun readVotes (file:File):  List<List<String>> {
 
 }
 
-fun candidates(votes: List<List<String>>): List<String> {
+fun candidates(votes: List<List<String>>): List<String> { //Retourne la liste de candidats par l'ordre alphabétique
     val candidates = mutableSetOf<String>()
     votes.forEach { candidates.addAll(it) }
     return candidates.sorted()
 }
 
-data class FirstRoundResult(val candidate: String, val score: Int)
+data class FirstRoundResult(val candidate: String, val score: Int) //Retourne le nombre de votes par candidat
 fun firstRound(candidates: List<String>, votes: List<List<String>>): List<FirstRoundResult> {
     val firstRoundResults = mutableMapOf<String, Int>()
     candidates.forEach { candidate -> firstRoundResults[candidate] = 0 }
@@ -29,18 +32,16 @@ fun firstRound(candidates: List<String>, votes: List<List<String>>): List<FirstR
             }
         }
     }
-    return firstRoundResults.entries.map { FirstRoundResult(it.key, it.value) }.sortedByDescending { it.score }
+    return firstRoundResults.entries.map { FirstRoundResult(it.key, it.value) }.sortedBy { it.candidate }
 }
 
 
-
-
-fun finalists(firstRoundResults: List<FirstRoundResult>): List<String> {
+fun finalists(firstRoundResults: List<FirstRoundResult>): List<String> { //Retourne les deux candidats finalistes
     return firstRoundResults.take(2).map { it.candidate }
 }
 
 data class SecondRoundResult(val candidat_1: String, val score_1: Int, val candidat_2: String, val score_2: Int, val abstentions: Int)
-fun secondRound(votes: List<List<String>>, finalCandidat: List<String>): SecondRoundResult {
+fun secondRound(votes: List<List<String>>, finalCandidat: List<String>): SecondRoundResult { //Retourne le résultat du second tour
     var score1 = 0
     var score2 = 0
     var abstentions = 0
@@ -63,11 +64,8 @@ fun secondRound(votes: List<List<String>>, finalCandidat: List<String>): SecondR
     return SecondRoundResult(finalCandidat[0], score1, finalCandidat[1], score2, abstentions)
 }
 
-//Écrire une fonction qui affiche dans la console le résultat de l'élection. Pour le deuxième tour,
-//les pourcentages des deux candidats seront calculés sur la base des suffrages exprimés. (2
-//points)
 
-fun displayresults(firstRoundResults: List<FirstRoundResult>, secondRoundResults: SecondRoundResult) {
+fun displayresults(firstRoundResults: List<FirstRoundResult>, secondRoundResults: SecondRoundResult) { //Affiche les résultats
     println("\n Premier tour ")
     firstRoundResults.forEach { result ->
         println("${result.candidate} : ${result.score} voix")
@@ -80,15 +78,54 @@ fun displayresults(firstRoundResults: List<FirstRoundResult>, secondRoundResults
 
     println("\n Second tour \n ${secondRoundResults.candidat_1} : ${secondRoundResults.score_1} voix (${pourcentage_first}%)" +
             "\n ${secondRoundResults.candidat_2} : ${secondRoundResults.score_2} voix (${pourcentage_second}%)" +
-            "\n Abstentions : ${secondRoundResults.abstentions} voix ")
+            "\n Abstentions : ${secondRoundResults.abstentions} voix \n")
+}
+//_________________________________END_________________________________
+
+
+
+
+//_________________________________METHODE DE CONDORCET_________________________________
+fun pairwiseComparisons(candidates: List<String>, ballot: List<String>): List<List<Int>> { //Retourne la matrice d'entiers
+    val pairwiseComparisons = mutableListOf<List<Int>>()
+    candidates.forEach { candidate ->
+        val pairwiseComparison = mutableListOf<Int>()
+        candidates.forEach { otherCandidate ->
+            if (candidate == otherCandidate) {
+                pairwiseComparison.add(0)
+            } else {
+                val candidateIndex = ballot.indexOf(candidate)
+                val otherCandidateIndex = ballot.indexOf(otherCandidate)
+                if (candidateIndex < otherCandidateIndex || otherCandidateIndex == -1) {
+                    pairwiseComparison.add(1)
+                } else {
+                    pairwiseComparison.add(0)
+                }
+            }
+
+        }
+        pairwiseComparisons.add(pairwiseComparison)
+    }
+    return pairwiseComparisons
+}
+
+fun displayMatrice(pairwiseComparisons: List<List<Int>>) { //Affiche la matrice de pairwiseComparisons
+    pairwiseComparisons.forEach { row ->
+        row.forEach { value ->
+            print("$value ")
+        }
+        println()
+    }
 }
 
 
 
 
+//_________________________________END_________________________________
+
 fun main() {
 
-    val file = File("src/votes/300x6.txt")
+    val file = File("src/votes/sample.txt")
     val votes = readVotes(file) //Retourne la liste de liste de candidats avec la fonction readVotes (EXERCICE 1)
 
     val candidates_sort = candidates(votes) //Retourne la liste de candidats par l'ordre alphabétique (EXERCICE 2)
@@ -103,11 +140,11 @@ fun main() {
 
     displayresults(firstRoundResults, secondRoundResults) //Affiche les résultats (EXERCICE 6)
 
-    //val candidateList = candidates(votes)
-    //val firstRoundResults = firstRound(candidateList, votes)
-    //val finalCandidates = finalists(firstRoundResults)
-    //println("First round results: $firstRoundResults")
-    //println("Finalists: $finalCandidates")
+    //_________________________________METHODE DE CONDORCET_________________________________
+
+    val pairwiseComparisonsResult = pairwiseComparisons(candidates_sort, votes[0]) //Retourne la matrice (EXERCICE 7)
+    println(displayMatrice(pairwiseComparisonsResult))
+
 
 }
 
