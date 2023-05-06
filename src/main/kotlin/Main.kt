@@ -118,12 +118,25 @@ fun displayMatrice(pairwiseComparisons: List<List<Int>>) { //Affiche la matrice 
     }
 }
 
+fun sum(pairwiseComparisons1: List<List<Int>>, pairwiseComparisons2: List<List<Int>>): List<List<Int>> { //Retourne la matrice somme
+    val sum = mutableListOf<List<Int>>()
+    pairwiseComparisons1.forEachIndexed { index, row ->
+        val sumRow = mutableListOf<Int>()
+        row.forEachIndexed { index, value ->
+            sumRow.add(value + pairwiseComparisons2[index][index])
+        }
+        sum.add(sumRow)
+    }
+    return sum
+}
 
 
 
 //_________________________________END_________________________________
 
 fun main() {
+
+    //_________________________________SCRUTIN MAJORITAIRE A DEUX TOURS_________________________________
 
     val file = File("src/votes/sample.txt")
     val votes = readVotes(file) //Retourne la liste de liste de candidats avec la fonction readVotes (EXERCICE 1)
@@ -142,9 +155,14 @@ fun main() {
 
     //_________________________________METHODE DE CONDORCET_________________________________
 
-    val pairwiseComparisonsResult = pairwiseComparisons(candidates_sort, votes[0]) //Retourne la matrice (EXERCICE 7)
-    println(displayMatrice(pairwiseComparisonsResult))
+    val pairwiseComparisonsResult = pairwiseComparisons(candidates_sort, votes[0]) //Retourne la matrice 1(EXERCICE 7)
 
+
+    val pairwiseComparisonsResult2 = pairwiseComparisons(candidates_sort, votes[1]) //Retourne la matrice 2(EXERCICE 7)
+
+
+    val sumResult = sum(pairwiseComparisonsResult, pairwiseComparisonsResult2) //Retourne la matrice somme (EXERCICE 8)
+    println(displayMatrice(sumResult))
 
 }
 
