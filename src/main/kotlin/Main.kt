@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.math.round
 
 fun readVotes (file:File):  List<List<String>> {
     val candidatesList= mutableListOf<List<String>>()
@@ -71,9 +72,15 @@ fun displayresults(firstRoundResults: List<FirstRoundResult>, secondRoundResults
     firstRoundResults.forEach { result ->
         println("${result.candidate} : ${result.score} voix")
     }
-    println("\n Second tour \n ${secondRoundResults.candidat_1} : ${secondRoundResults.score_1} voix" +
-            "\n ${secondRoundResults.candidat_2} : ${secondRoundResults.score_2} voix" +
-            "\n Abstentions : ${secondRoundResults.abstentions} voix")
+
+    var total = secondRoundResults.score_1 + secondRoundResults.score_2
+    var pourcentage_first = round((secondRoundResults.score_1.toDouble() / total) * 100 * 100) / 100
+    var pourcentage_second = round((secondRoundResults.score_2.toDouble() / total) * 100 * 100) / 100
+
+
+    println("\n Second tour \n ${secondRoundResults.candidat_1} : ${secondRoundResults.score_1} voix (${pourcentage_first}%)" +
+            "\n ${secondRoundResults.candidat_2} : ${secondRoundResults.score_2} voix (${pourcentage_second}%)" +
+            "\n Abstentions : ${secondRoundResults.abstentions} voix ")
 }
 
 
