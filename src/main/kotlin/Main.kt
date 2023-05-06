@@ -40,28 +40,24 @@ fun finalists(firstRoundResults: List<FirstRoundResult>): List<String> { //Retou
     return firstRoundResults.take(2).map { it.candidate }
 }
 
+//Refaire la fonction finalists sa
+
 data class SecondRoundResult(val candidat_1: String, val score_1: Int, val candidat_2: String, val score_2: Int, val abstentions: Int)
-fun secondRound(votes: List<List<String>>, finalCandidat: List<String>): SecondRoundResult { //Retourne le résultat du second tour
+fun secondRound(votes: List<List<String>>, finalCandidates: List<String>): SecondRoundResult {
     var score1 = 0
     var score2 = 0
-    var abstentions = 0
 
-    votes.forEach { ballot ->
-        when (val firstPreference = ballot[0]) {
-            finalCandidat[0] -> score1++
-            finalCandidat[1] -> score2++
-            else -> {
-                val secondPreference = ballot.getOrElse(1) { firstPreference }
-                when (secondPreference) {
-                    finalCandidat[0] -> score1++
-                    finalCandidat[1] -> score2++
-                    else -> abstentions++
-                }
-            }
+    votes.forEach { ballot -> //On parcourt les votes
+        val preferredCandidate = ballot.firstOrNull { it in finalCandidates }
+        when (preferredCandidate) { //On incrémente le score du candidat préféré
+            finalCandidates[0] -> score1++
+            finalCandidates[1] -> score2++
         }
     }
 
-    return SecondRoundResult(finalCandidat[0], score1, finalCandidat[1], score2, abstentions)
+    val abstentions = votes.size - (score1 + score2) //On calcule le nombre d'abstentions
+
+    return SecondRoundResult(finalCandidates[0], score1, finalCandidates[1], score2, abstentions)
 }
 
 
@@ -76,7 +72,8 @@ fun displayresults(firstRoundResults: List<FirstRoundResult>, secondRoundResults
     var pourcentage_second = round((secondRoundResults.score_2.toDouble() / total) * 100 * 100) / 100
 
 
-    println("\n Second tour \n ${secondRoundResults.candidat_1} : ${secondRoundResults.score_1} voix (${pourcentage_first}%)" +
+    println("\n Second tour entre ${secondRoundResults.candidat_1} et ${secondRoundResults.candidat_2}" +
+            "\n ${secondRoundResults.candidat_1} : ${secondRoundResults.score_1} voix (${pourcentage_first}%)" +
             "\n ${secondRoundResults.candidat_2} : ${secondRoundResults.score_2} voix (${pourcentage_second}%)" +
             "\n Abstentions : ${secondRoundResults.abstentions} voix \n")
 }
