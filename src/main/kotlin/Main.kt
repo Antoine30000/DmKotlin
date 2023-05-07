@@ -203,7 +203,7 @@ fun main() {
     //println("Resultat matrice 2: ${displayMatrice(pairwiseComparisonsResult2)}")
 
     val sumResult = sum(pairwiseComparisonsResult, pairwiseComparisonsResult2) //Retourne la matrice somme (EXERCICE 8)
-    //println("Resultat matrice: ${displayMatrice(sumResult)}")
+    println("Resultat matrice: ${displayMatrice(pairwiseComparisonsResult2)}")
 
     val condorcetMatrixResult = condorcetMatrix(candidatesSort, votes)
     //println("Résultlat matrice de Condorcet: ${displayMatrice(condorcetMatrixResult)}")
