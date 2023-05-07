@@ -1,6 +1,5 @@
 import java.io.File
 import kotlin.math.round
-import kotlin.math.roundToInt
 
 
 //_________________________________SCRUTIN MAJORITAIRE A DEUX TOURS_________________________________
@@ -126,6 +125,42 @@ fun sum(pairwiseComparisons1: List<List<Int>>, pairwiseComparisons2: List<List<I
     }
     return sum
 }
+
+fun condorcetMatrix(candidates: List<String>, ballots: List<List<String>>): List<List<Int>> {
+    val pairwiseComparisons = MutableList(candidates.size) { MutableList(candidates.size) {0} }
+
+    for (ballot in ballots) {
+        for (i in candidates.indices) {
+            for (j in i + 1 until candidates.size) {
+                val candidate1 = candidates[i]
+                val candidate2 = candidates[j]
+                if (ballot.indexOf(candidate1) < ballot.indexOf(candidate2)) {
+                    pairwiseComparisons[i][j]++
+                } else {
+                    pairwiseComparisons[j][i]++
+                }
+            }
+        }
+    }
+    return pairwiseComparisons
+}
+
+fun condorcetWinner(candidates: List<String>, condorcetMatrix: List<List<Int>>): String? {
+    for (i in candidates.indices) {
+        var wins = true
+        for (j in candidates.indices) {
+            if (i == j) continue
+            if (condorcetMatrix[i][j] <= condorcetMatrix[j][i]) {
+                wins = false
+                break
+            }
+        }
+        if (wins) return candidates[i]
+    }
+    return null
+}
+
+
 //_________________________________END_________________________________
 
 fun main() {
@@ -136,10 +171,10 @@ fun main() {
     val votes = readVotes(file) //Retourne la liste de liste de candidats avec la fonction readVotes (EXERCICE 1)
     //println(votes)
 
-    val candidates_sort = candidates(votes) //Retourne la liste de candidats par l'ordre alphabétique (EXERCICE 2)
+    val candidatesSort = candidates(votes) //Retourne la liste de candidats par l'ordre alphabétique (EXERCICE 2)
     //println(candidates_sort)
 
-    val firstRoundResults = firstRound(candidates_sort, votes) //Retourne le nombre de votes par candidat (EXERCICE 3)
+    val firstRoundResults = firstRound(candidatesSort, votes) //Retourne le nombre de votes par candidat (EXERCICE 3)
     //println(firstRoundResults)
 
     val finalCandidates = finalists(firstRoundResults) //Retourne les deux candidats finalistes (EXERCICE 4)
@@ -152,14 +187,18 @@ fun main() {
 
     //_________________________________METHODE DE CONDORCET_________________________________
 
-    val pairwiseComparisonsResult = pairwiseComparisons(candidates_sort, votes[0]) //Retourne la matrice 1(EXERCICE 7)
+    val pairwiseComparisonsResult = pairwiseComparisons(candidatesSort, votes[0]) //Retourne la matrice 1(EXERCICE 7)
     //println("Resultat matrice 1: ${displayMatrice(pairwiseComparisonsResult)}")
 
-    val pairwiseComparisonsResult2 = pairwiseComparisons(candidates_sort, votes[1]) //Retourne la matrice 2(EXERCICE 7)
+    val pairwiseComparisonsResult2 = pairwiseComparisons(candidatesSort, votes[1]) //Retourne la matrice 2(EXERCICE 7)
     //println("Resultat matrice 2: ${displayMatrice(pairwiseComparisonsResult2)}")
 
     val sumResult = sum(pairwiseComparisonsResult, pairwiseComparisonsResult2) //Retourne la matrice somme (EXERCICE 8)
     println("Resultat matrice: ${displayMatrice(pairwiseComparisonsResult2)}")
 
+    val condorcetMatrixResult = condorcetMatrix(candidatesSort, votes)
+    println("Résultlat matrice de Condorcet: ${displayMatrice(condorcetMatrixResult)}")
 
+    val condorsetWinnerResult = condorcetWinner(candidatesSort, condorcetMatrixResult)
+    println("Le gagnant de l'élection de Condorcet est : $condorsetWinnerResult")
 }
