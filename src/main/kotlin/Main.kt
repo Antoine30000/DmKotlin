@@ -212,3 +212,4 @@ fun main() {
     println("Méthode de Condorcet \n" +
             "$condorsetWinnerResult est le vainqueur de Condorcet")
 }
+
