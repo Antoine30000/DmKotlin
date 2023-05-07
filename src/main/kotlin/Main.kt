@@ -49,7 +49,9 @@ fun finalists(firstRoundResults: List<FirstRoundResult>): List<String> { //Retou
 
 
 data class SecondRoundResult(val candidat_1: String, val score_1: Int, val candidat_2: String, val score_2: Int, val abstentions: Int)
-fun secondRound(votes: List<List<String>>, finalCandidates: List<String>): SecondRoundResult {
+fun
+
+        secondRound(votes: List<List<String>>, finalCandidates: List<String>): SecondRoundResult {
     var score1 = 0
     var score2 = 0
 
